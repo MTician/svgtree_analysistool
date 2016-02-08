@@ -1,0 +1,30 @@
+———————————————————————————
+Analysis (note: N = number trees, n = number transects per tree)
+
+Single sample correlations:
+1) For all samples (and as large an an n as you have for hand-drawn data), compare correlation of rainfall and n averaged transects (using raw w/o zeros) vs. correlation of rainfall and n hand-drawn transects.
+The correlation here should be based on the alignment that gives the best correlation.
+2) Repeat (1) using raw w/ zeros.
+3) Repeat (1) using area data.
+Note that hand-drawn data should ideally be from a 3rd party.
+
+Forest Average correlations:
+4) Repeat (1) and (2) but for forest average found using the three methods below.  Do this for both the svgtree data and the hand-drawn data.  If you don’t have 3rd party hand-alignments, we can skip the hand-alignment method.  Please make some note comparing not just the correlations, but the alignments found by the three forest averaging methods.
+
+5) Repeat (1), (2) and (3) for just the svgtree data and just Forest Average Method #2 using multiple values of n small to large.  Plot correlations against n.
+
+6) Repeat (4) and (5) using evenly spaced transect data.
+———————————————————————————
+
+Forest Average 1:  Use brute force to align transect averages from N different trees (this can only be done for small N as you know).
+
+Forest Average 2: We want to align the transect average from each sample with a portion of the climate data and then use the rest of the climate data (the portion we did NOT use for alignment) to test for a correlation. We should test for correlation in two ways:
+a) Test the correlation of the each sample with the remaining climate data.
+b) Test the correlation of the forest average (averaged using these alignments) with the remaining climate data.
+
+Methodology:  It’s possible that what “portion”  of the climate data we use for alignment is  crucial.  This could be the first half, the latter half, the middle, every other year, or a chunk of years in the first half and a chunk of years in the second half.  
+Let’s call the portion of the climate data we used for alignment the “test portion” and the rest the “verification portion”.
+In order to find a good test portion of the climate data to use we should divide the tree samples into two groups (maybe half and half), a “test group” and a “verification group”.  We then come up with a list of potential test portions to check (like the list above) and use the test group of tree samples to determine which of these potential test portion gives the best results (best correlations against verification portion after aligning against test portion).  Then we take this winning test portion, and use it to align the verification group of tree samples, correlate against the verification portion, and we have our result.
+Note:  Let’s do (find best test portion, etc) separately for the (a) and the (b) correlations.
+
+Forest Average 3: Align by hand (this should be done be an expert 3rd party).
