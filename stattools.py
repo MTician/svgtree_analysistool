@@ -1,19 +1,11 @@
 from __future__ import division
 from math import sqrt
-from scipy.stats import pearsonr
+from correlation_tests import test_dict
 import numpy as np
+import options as opt
+import patterns as pat
 
-
-# import warnings
-# def pearsonr(x, y):
-#     with warnings.catch_warnings():
-#         warnings.filterwarnings('error')
-#         try:
-#             return pear(x, y)
-#         except Warning:
-#             print Warning
-#             res = pear(x, y)
-#             raise Exception()
+correlation_test = test_dict[opt.CORRELATION_TEST]
 
 
 def shifted_and_patterned(x, y, k, pattern=None, crop=True):
@@ -26,8 +18,12 @@ def shifted_and_patterned(x, y, k, pattern=None, crop=True):
         xp = x[abs(k):]
         yp = y[0:]
     if pattern:
-        xp = [val for i, val in enumerate(xp) if i in pattern]
-        yp = [val for i, val in enumerate(yp) if i in pattern]
+        if isinstance(pattern, str):
+            pat_range = pat.pattern_dict[pattern](len(xp))
+        else:
+            pat_range = pattern(len(xp))
+        xp = [val for i, val in enumerate(xp) if i in pat_range]
+        yp = [val for i, val in enumerate(yp) if i in pat_range]
     if crop:
         win_size = min(len(xp), len(yp))
         xp = xp[:win_size]
@@ -38,15 +34,7 @@ def shifted_and_patterned(x, y, k, pattern=None, crop=True):
 def shifted(x, y, k, pattern=None):
     """Returns cropped subsequences of maximal length that
     align x[0] with y[k]"""
-    # if k > 0:  # x[0] aligns with y[k]
-    #     win_size = min(len(x), len(y[k:]))
-    #     x_win = x[0:win_size]
-    #     y_win = y[k:k + win_size]
-    # else:  # x[k] aligns with y[0]
-    #     win_size = min(len(x[abs(k):]), len(y))
-    #     x_win = x[abs(k):abs(k) + win_size]
-    #     y_win = y[0:win_size]
-    return shifted_and_patterned(x, y, k)
+    return shifted_and_patterned(x, y, k, pattern=pattern)
 
 
 def ccorr(x, y, max_shift, min_overlap, pattern=None):
@@ -58,7 +46,7 @@ def ccorr(x, y, max_shift, min_overlap, pattern=None):
         x_win, y_win = shifted(x, y, shft, pattern=pattern)
         if len(x_win) < min_overlap:
             continue
-        r, p = pearsonr(x_win, y_win)
+        r, p = correlation_test(x_win, y_win)
         res.append((shft, r, p))
     return res
 

@@ -22,7 +22,7 @@ def first_and_last_quarter(n):
 
 
 # 70/30 patterns
-def firstseventy(n):
+def first_seventy(n):
     return range(0, 7*n//10)
 
 
@@ -32,5 +32,16 @@ def most(n):
 
 
 # only last tree
-def onlylast(n):
+def only_last(n):
     return [n-1]
+
+
+pattern_dict = {'odds': odds,
+                'evens': evens,
+                'first_half': first_half,
+                'second_half': second_half,
+                'first_and_last_quarter': first_and_last_quarter,
+                'first_seventy': first_seventy,
+                'most': most,
+                'only_last': only_last
+                }

@@ -11,6 +11,7 @@ from csvio import csv2arr, arr2csv, transpose
 import patterns as pat
 from alignment import *
 import options as opt
+from patterns import pattern_dict
 
 
 ############################################################
@@ -23,8 +24,9 @@ if opt.DEBUG_MODE_ON:
     opt.RAIN_DATA_HAS_HEADERS = False
     opt.SAMPLE_DATA_HAS_HEADERS = False
 
-if opt.GENERATE_NEW_FAKE_DATA:
-    gen_new_fake_data(opt.N_RAIN, opt.N_SAMPLES, opt.REL_NOISE, opt.MEAN_SLOPE)
+    if opt.GENERATE_NEW_FAKE_DATA:
+        args = (opt.N_RAIN, opt.N_SAMPLES, opt.REL_NOISE, opt.MEAN_SLOPE)
+        gen_new_fake_data(*args)
 
 
 ############################################################
@@ -50,59 +52,83 @@ sampledata = transpose(sampledata)
 # convert any strings to floats
 sampledata = [[float(x) for x in sample if x] for sample in sampledata]
 
-
 ############################################################
 # Analysis
 ############################################################
-if not opt.DEBUG_MODE_ON:
+if not opt.DEBUG_MODE_ON or opt.TEST_DUMMY_RESULTS_LIKE_THEY_ARE_REAL:
     # Test single sample results if using generated fake data
-    single_sample_results = align(rain, sampledata)
+    single_sample_results, probs = align(rain, sampledata)
     print "\nSingle Sample Results:"
     q = 1
-    for res in single_sample_results:
-        q *= 1 - res[2]
-        print "(shift, r, p) =", res[:3]
-    print "Product P-value =", 1 - q
+    print "(p < 0.01, p, r, shift)"
+    for idx, res in enumerate(single_sample_results):
+        if res[0]!='NA':
+            args = (probs[idx] < 0.01, probs[idx], res[1], res[0])
+            print "({}, {:.3f}, {:+.3f}, {})".format(*args)
+        else:
+            print "skipped"
 
-    # Test single sample results if using generated fake data
-    test_patterns = [f(len(rain)) for f in opt.TEST_PATTERNS]
-    test_tree_indices = opt.TEST_TREE_INDICES(len(sampledata))
-    args = (rain, sampledata, test_patterns, test_tree_indices)
+    # Forest Average results
+    test_pat_funcs = [pattern_dict[test] for test in opt.TEST_PATTERNS]
+    test_patterns = [f(len(rain)) for f in test_pat_funcs]
+    test_tree_indices = pattern_dict[opt.TEST_TREE_PATTERN](len(sampledata))
+    args = rain, sampledata
     forest_results, skipped_trees, best_pattern = forest_average(*args)
     print "\nForest Average Results:"
     print "best pattern =", best_pattern
     print "skipped trees: ", (str(skipped_trees)[1:-1]
                               if skipped_trees else 'None')
-    q = 1
-    for res in forest_results:
-        shift, r, p = res[:3]
-        if p != 'NA':
-            q *= 1 - p
-        print "(shift, r, p) =", res[:3]
-    print "Product P-value =", 1 - q
+    print "(p < 0.01, p, r, shift)"
+    for idx, res in enumerate(forest_results):
+        if res[0]!='NA':
+            args = (res[2] < 0.01, res[2], res[1], res[0])
+            print "({}, {:.3f}, {:+.3f}, {})".format(*args)
+        else:
+            print "skipped"
 
 
 ############################################################
 # Debug Test
 ############################################################
-if opt.DEBUG_MODE_ON:
+if opt.DEBUG_MODE_ON and not opt.TEST_DUMMY_RESULTS_LIKE_THEY_ARE_REAL:
     # Test single sample results
-    single_sample_results = align(rain, sampledata)
+    single_sample_results, probs = align(rain, sampledata)
     from testingtools import test_shift_results, get_fake_data_params
     shifts = get_fake_data_params()[0]
-    test_shift_results(single_sample_results, shifts)
+
+    print "\nSingle Sample Results:"
+    if opt.TEST_FALSE_CASE:
+        print "(p < 0.01, p, r, shift)"
+        for idx, res in enumerate(single_sample_results):
+            args = (probs[idx] < 0.01, probs[idx], res[1], res[0])
+            print "({}, {:.3f}, {:+.3f}, {})".format(*args)
+    else:
+        test_shift_results(single_sample_results, shifts)
     print ''
 
     # Test forest results
-    test_patterns = [f(len(rain)) for f in opt.TEST_PATTERNS]
-    test_tree_indices = opt.TEST_TREE_INDICES(len(sampledata))
-    args = (rain, sampledata, test_patterns, test_tree_indices)
+    test_tree_indices = pattern_dict[opt.TEST_TREE_PATTERN](len(sampledata))
+    args = rain, sampledata
     forest_results, skipped_trees, best_pattern = forest_average(*args)
     from testingtools import test_shift_results, get_fake_data_params
     rshifts = get_fake_data_params()[0]
     rshifts = [k for idx, k in enumerate(rshifts) if
                idx not in test_tree_indices]
-    test_shift_results(forest_results, rshifts)
+
+    print "\nForest Average Results:"
+    print "best pattern =", best_pattern
+    print "skipped trees: ", (str(skipped_trees)[1:-1]
+                              if skipped_trees else 'None')
+    if opt.TEST_FALSE_CASE:
+        print "(p < 0.01, p, r, shift)"
+        for idx, res in enumerate(forest_results):
+                if res[0]!='NA':
+                    args = (res[2] < 0.01, res[2], res[1], res[0])
+                    print "({}, {:.3f}, {:+.3f}, {})".format(*args)
+                else:
+                    print "skipped"
+    else:
+        test_shift_results(forest_results, rshifts)
     s = "skipped trees: "
     s += (str(skipped_trees)[1:-1] if skipped_trees else 'None')
     print s
