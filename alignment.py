@@ -32,11 +32,11 @@ def align(rain, sampledata, pattern=None):
         probs.append(prob)
     return results, probs
 
-def pattern_score(probs):
+def pattern_score(pvals):
     """This function is meant to score how well a pattern did so it can be
     compared against others."""
     q = 1
-    for p in probs:
+    for p in pvals:
         q *= 1-p
     return 1 - q
 
@@ -55,7 +55,8 @@ def forest_average(rain, trees):
         # test_rain = [rain[idx] for idx in pattern]
         results, probs = align(rain, test_trees, pattern=pattern)
         shifts = [res[0] for res in results]
-        score = pattern_score(probs)
+        pvals = [res[2] for res in results]
+        score = pattern_score(pvals)
         test_results.append((score, pattern, shifts))
 
     best_result = min(test_results, key=itemgetter(0))
