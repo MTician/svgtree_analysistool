@@ -7,7 +7,8 @@ from __future__ import division
 
 # rainfall data in chronological order (oldest to newest)
 # note: this should be one column with no labels
-RAINFALLDATA_FN = 'rain.csv'
+# RAINFALLDATA_FN = 'rain.csv'
+RAINFALLDATA_FN = 'rain_reversed.csv'
 RAIN_DATA_HAS_HEADERS = False  # first row is label
 
 # sample data where each column is the averaged transect
@@ -22,12 +23,12 @@ SAMPLE_DATA_HAS_HEADERS = True  # first row is labels
 # year of rain data
 MIN_SHIFT = -50
 MAX_SHIFT = 50
-MIN_OVERLAP = 10  # minimum time overlap to consider
+MIN_OVERLAP = 5  # minimum time overlap to consider
 
 # Forest Average test patterns (see patterns.py for options)
 # Note: If you only want to use one test pattern, add a column
 # to your data (on the far right) with dummy numbers and
-TEST_PATTERNS = ['first_seventy']
+TEST_PATTERNS = ['second_half']
 TEST_TREE_PATTERN = 'only_last'
 
 # See correlation_tests.py for choices.

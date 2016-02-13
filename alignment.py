@@ -11,7 +11,7 @@ from patterns import pattern_dict
 
 correlation_test = test_dict[opt.CORRELATION_TEST]
 
-# single sample correlations
+
 def align(rain, sampledata, pattern=None):
     results = []
     probs = []
@@ -32,6 +32,7 @@ def align(rain, sampledata, pattern=None):
         results.append((shift, r, p, cc))
         probs.append(prob)
     return results, probs
+
 
 def pattern_score(pvals):
     """This function is meant to score how well a pattern did so it can be
