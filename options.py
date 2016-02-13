@@ -16,25 +16,28 @@ SAMPLEDATA_FN = 'summary_data.csv'
 # SAMPLEDATA_FN = 'samples.csv'
 SAMPLE_DATA_HAS_HEADERS = True  # first row is labels
 
-# maximum offset and in time between rain and sample data
+# min/max offset and in time between rain and sample data
 # time series to test for
-MAX_SHIFT = 1000
+# Note: min should be negative if trees are older than first
+# year of rain data
+MIN_SHIFT = -50
+MAX_SHIFT = 50
 MIN_OVERLAP = 10  # minimum time overlap to consider
 
 # Forest Average test patterns (see patterns.py for options)
 # Note: If you only want to use one test pattern, add a column
 # to your data (on the far right) with dummy numbers and
-TEST_PATTERNS = ['second_half']
+TEST_PATTERNS = ['first_seventy']
 TEST_TREE_PATTERN = 'only_last'
 
 # See correlation_tests.py for choices.
-# CORRELATION_TEST = 'pearson'
-CORRELATION_TEST = 'spearman'
+CORRELATION_TEST = 'pearson'
+# CORRELATION_TEST = 'spearman'
 # CORRELATION_TEST = 'kendall'
 
 # Debugging options
 DEBUG_MODE_ON = False
-TEST_FALSE_CASE = True  # If true, all tests are expected to fail
+TEST_FALSE_CASE = False  # If true, all tests are expected to fail
 GENERATE_NEW_FAKE_DATA = True
 TEST_DUMMY_RESULTS_LIKE_THEY_ARE_REAL = True
 N_RAIN = 500

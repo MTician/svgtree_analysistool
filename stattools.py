@@ -37,12 +37,12 @@ def shifted(x, y, k, pattern=None):
     return shifted_and_patterned(x, y, k, pattern=pattern)
 
 
-def ccorr(x, y, max_shift, min_overlap, pattern=None):
+def ccorr(x, y, min_shift, max_shift, min_overlap, pattern=None):
     """returns the cross-correlations as a list of triples (k, r, p) where
     r and p are the peasrson correlation coefficient and associated P-value
     for when aligning x[0] with y[k]."""
     res = []
-    for shft in xrange(0 - max_shift, max_shift + 1):
+    for shft in xrange(min_shift, max_shift + 1):
         x_win, y_win = shifted(x, y, shft, pattern=pattern)
         if len(x_win) < min_overlap:
             continue

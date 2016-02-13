@@ -32,7 +32,6 @@ if opt.DEBUG_MODE_ON:
 ############################################################
 # Data Pre-Processing
 ############################################################
-assert opt.MAX_SHIFT >= 0
 assert 0 <= opt.MIN_OVERLAP <= len(csv2arr(opt.RAINFALLDATA_FN))
 
 # format and normalize rainfall data
