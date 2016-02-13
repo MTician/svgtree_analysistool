@@ -18,9 +18,16 @@ def align(rain, sampledata, pattern=None):
     for sample in sampledata:
         cc = ccorr(rain, sample, opt.MIN_SHIFT, opt.MAX_SHIFT,
                    opt.MIN_OVERLAP, pattern)
-        if cc:
-            # find best alignment by P-value
-            shift, r, p = min(cc, key=itemgetter(2))
+
+        # Only allow for valid alignments to be selected as best
+        if opt.FORCE_POSITIVE_R:
+            validcc = [res for res in cc if res[1] > 0]
+        else:
+            validcc = cc
+
+        if validcc:
+            # find best (valid) alignment by P-value
+            shift, r, p = min(validcc, key=itemgetter(2))
 
             # find the probability of getting such a good P-value by random
             # chance in len(cc) tests

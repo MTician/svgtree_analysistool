@@ -59,12 +59,12 @@ if not opt.DEBUG_MODE_ON or opt.TEST_DUMMY_RESULTS_LIKE_THEY_ARE_REAL:
     single_sample_results, probs = align(rain, sampledata)
     print "\nSingle Sample Results:"
     q = 1
-    print "# : (p < 0.01, p, r, shift)"
+    print "# : (p < {}, p, r, shift)".format(opt.ALPHA)
     digs = int(ceil(log10(len(single_sample_results))))
     for idx, res in enumerate(single_sample_results):
         id = str(idx).zfill(digs)
         if res[0]!='NA':
-            args = (probs[idx] < 0.01, probs[idx], res[1], res[0])
+            args = (probs[idx] < opt.ALPHA, probs[idx], res[1], res[0])
             print "{} : ({}, {:.3f}, {:+.3f}, {})".format(id, *args)
         else:
             print "{} : skipped".format(id)
@@ -79,12 +79,12 @@ if not opt.DEBUG_MODE_ON or opt.TEST_DUMMY_RESULTS_LIKE_THEY_ARE_REAL:
     print "best pattern =", best_pattern
     print "skipped trees: ", (str(skipped_trees)[1:-1]
                               if skipped_trees else 'None')
-    print "# : (p < 0.01, p, r, shift)"
+    print "# : (p < {}, p, r, shift)".format(opt.ALPHA)
     digs = int(ceil(log10(len(forest_results))))
     for idx, res in enumerate(forest_results):
         id = str(idx).zfill(digs)
         if res[2]!='NA':
-            args = (res[2] < 0.01, res[2], res[1], res[0])
+            args = (res[2] < opt.ALPHA, res[2], res[1], res[0])
             print "{} : ({}, {:.3f}, {:+.3f}, {})".format(id, *args)
         else:
             print "{} : skipped".format(id)
