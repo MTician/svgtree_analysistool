@@ -1,6 +1,4 @@
-
 *.pyc
-
+.*
 *.csv
-
-dummy_params.csv
+!/.gitignore
